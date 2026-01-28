@@ -1,47 +1,53 @@
+How does a browser’s Back button work using a stack?
+
 #include <stdio.h>
+#include <string.h>
+
 #define MAX 5
 
-int stack[MAX];
+char history[MAX][50];
 int top = -1;
 
-void push(int value) {
+void visitPage(char page[]) {
     if (top == MAX - 1) {
-        printf("Stack Overflow! Cannot push %d\n", value);
+        printf("History full\n");
     } else {
-        stack[++top] = value;
-        printf("Pushed: %d\n", value);
+        top++;
+        strcpy(history[top], page);
+        printf("Visited: %s\n", page);
     }
 }
 
-void pop() {
-    if (top == -1) {
-        printf("Stack Underflow! Nothing to pop\n");
+void goBack() {
+    if (top <= 0) {
+        printf("No previous page to go back\n");
     } else {
-        printf("Popped: %d\n", stack[top--]);
+        printf("Going back from %s\n", history[top]);
+        top--;
+        printf("Current page: %s\n", history[top]);
     }
 }
 
-void display() {
+void showHistory() {
     if (top == -1) {
-        printf("Stack is empty\n");
+        printf("No browsing history\n");
     } else {
-        printf("Stack elements (top to bottom): ");
+        printf("Browser History (latest first):\n");
         for (int i = top; i >= 0; i--) {
-            printf("%d ", stack[i]);
+            printf("%s\n", history[i]);
         }
-        printf("\n");
     }
 }
 
 int main() {
-    push(10);
-    push(20);
-    push(30);
+    visitPage("google.com");
+    visitPage("youtube.com");
+    visitPage("wikipedia.org");
 
-    display();
+    showHistory();
 
-    pop();
-    display();
+    goBack();
+    goBack();
 
     return 0;
 }
